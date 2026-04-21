@@ -1047,6 +1047,98 @@
             pointer-events: none;
             z-index: 3;
         }
+
+        @media (max-width: 900px) {
+            #root {
+                grid-template-rows: 48px auto 40vh auto 1fr;
+                grid-template-columns: 1fr;
+                height: 100vh;
+                overflow-y: auto;
+                overflow-x: hidden;
+            }
+
+            body {
+                overflow-y: auto;
+            }
+
+            #header,
+            #histBar,
+            #betsPanel,
+            #gameArea,
+            #betControls {
+                grid-column: 1 / -1;
+            }
+
+            #header {
+                grid-row: 1;
+            }
+
+            #histBar {
+                grid-row: 2;
+                height: auto;
+                min-height: 36px;
+            }
+
+            #gameArea {
+                grid-row: 3;
+            }
+
+            #betControls {
+                grid-row: 4;
+                flex-direction: column;
+                align-items: stretch;
+                height: auto;
+                padding: 15px;
+                gap: 15px;
+            }
+
+            .bet-slot {
+                border-right: none;
+                flex-direction: column;
+                padding: 0;
+                width: 100%;
+            }
+
+            .amt-ctrl {
+                width: 100%;
+            }
+
+            .amt-row {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .amt-input {
+                width: 100%;
+                flex: 1;
+            }
+
+            .quick-amts {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                width: 100%;
+                gap: 8px;
+            }
+
+            .qa {
+                padding: 8px 0;
+            }
+
+            .main-bet-btn {
+                width: 100%;
+                margin: 0;
+            }
+
+            .wallet-mini {
+                display: none;
+            }
+
+            #betsPanel {
+                grid-row: 5;
+                min-height: 400px;
+                border-right: none;
+            }
+        }
     </style>
 </head>
 
