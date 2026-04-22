@@ -82,6 +82,7 @@
             font-weight: 700;
             background: linear-gradient(90deg, var(--accent), var(--cyan));
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: 2px;
             display: flex;
@@ -148,6 +149,115 @@
             color: var(--text3);
             text-transform: uppercase;
             letter-spacing: 1px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .b-btn {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 7px 14px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+        }
+
+        .dep-btn {
+            background: var(--green);
+            color: #000;
+            box-shadow: 0 0 10px rgba(0, 231, 122, 0.2);
+        }
+
+        .wd-btn {
+            background: rgba(255, 54, 84, 0.1);
+            color: var(--text2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dep-btn:hover {
+            opacity: 0.8;
+            transform: translateY(-1px);
+        }
+
+        .wd-btn:hover {
+            background: rgba(255, 54, 84, 0.25);
+            color: #fff;
+        }
+
+        /* Modal Styles */
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .m-content {
+            background: #1a1a35;
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 350px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .m-close {
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            color: var(--text3);
+            font-size: 20px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .m-close:hover {
+            color: #fff;
+        }
+
+        .m-title {
+            font-family: 'Rajdhani', sans-serif;
+            color: var(--accent);
+            font-size: 26px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .m-btn {
+            width: 100%;
+            border: none;
+            background: #fff;
+            color: #000;
+            font-size: 14px;
+            font-weight: 700;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 15px;
+            text-transform: uppercase;
+        }
+
+        .m-btn.green {
+            background: var(--green);
         }
 
         #headerWalletAmt {
@@ -556,6 +666,7 @@
         #multValue.fly {
             background: linear-gradient(135deg, #fff 0%, #ddd 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 0 20px rgba(200, 75, 255, 0.5));
         }
@@ -563,6 +674,7 @@
         #multValue.high {
             background: linear-gradient(135deg, var(--yellow) 0%, var(--orange) 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 0 30px rgba(255, 159, 28, 0.7));
         }
@@ -570,6 +682,7 @@
         #multValue.crashed {
             background: linear-gradient(135deg, var(--red) 0%, #ff8c00 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 0 30px var(--glow-red));
             animation: crashShake 0.5s ease;
@@ -1037,15 +1150,211 @@
         }
 
         /* ══════════════════════════════════════════════════
-   PARTICLE CANVAS
+   SIDEBAR
 ══════════════════════════════════════════════════ */
-        #particleCanvas {
-            position: absolute;
-            inset: 0;
-            width: 100%;
+        #profileSidebar {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 320px;
             height: 100%;
+            background: var(--panel);
+            border-left: 1px solid var(--border);
+            z-index: 1001;
+            transition: right 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.4);
+        }
+
+        #profileSidebar.open {
+            right: 0;
+        }
+
+        #profileOverlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            opacity: 0;
             pointer-events: none;
-            z-index: 3;
+            transition: opacity 0.3s ease;
+        }
+
+        #profileOverlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .s-header {
+            padding: 30px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .s-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--panel2);
+            border: 1.5px solid var(--border2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .s-info-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .s-info-mob {
+            font-size: 13px;
+            color: var(--text3);
+        }
+
+        .s-nav {
+            padding: 20px 0;
+            flex: 1;
+        }
+
+        .s-item {
+            width: 100%;
+            padding: 14px 20px;
+            border: none;
+            background: none;
+            color: var(--text2);
+            font-size: 14px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+
+        .s-item:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: #fff;
+        }
+
+        .s-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* Withdrawal Enhancements */
+        .w-option {
+            background: var(--panel2);
+            border: 1px solid var(--border2);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .w-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text2);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .w-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .w-label {
+            font-size: 11px;
+            color: var(--text3);
+        }
+
+        .w-input {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .w-input:focus {
+            border-color: var(--accent);
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .upload-area.has-file {
+            border-color: var(--green);
+            background: rgba(0, 231, 122, 0.05);
+        }
+
+        .upload-area i {
+            font-size: 32px;
+            color: var(--accent);
+            transition: transform 0.3s ease;
+        }
+
+        .upload-area:hover i {
+            transform: scale(1.1);
+        }
+
+        .upload-area.has-file i {
+            color: var(--green);
+        }
+
+        .upload-area p {
+            font-size: 13px;
+            color: #b0b0cc;
+            margin: 0;
+        }
+
+        .file-info {
+            display: none;
+            background: rgba(0, 231, 122, 0.1);
+            color: var(--green);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .upload-area.has-file .file-info {
+            display: block;
         }
 
         @media (max-width: 900px) {
@@ -1138,6 +1447,188 @@
                 min-height: 400px;
                 border-right: none;
             }
+
+            #root {
+                grid-template-columns: 1fr;
+                /* Force single column on mobile */
+            }
+        }
+
+        /* Bet Slip Overlay */
+        #betSlip {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1a1a2e;
+            border-top: 2px solid var(--accent);
+            padding: 20px;
+            z-index: 4000;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        #betSlip.active {
+            transform: translateY(0);
+        }
+
+        .slip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .slip-title {
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .slip-close {
+            cursor: pointer;
+            color: var(--text3);
+            font-size: 20px;
+        }
+
+        .slip-match {
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .slip-odds-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .slip-input-grp {
+            margin-bottom: 15px;
+        }
+
+        .slip-input-grp label {
+            display: block;
+            font-size: 11px;
+            color: var(--text3);
+            margin-bottom: 5px;
+        }
+
+        .slip-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .slip-payout {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(0, 255, 100, 0.05);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .payout-lbl {
+            font-size: 12px;
+            color: var(--text3);
+        }
+
+        .payout-val {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--green);
+        }
+
+        .slip-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 16px;
+        }
+
+        /* Cricket Odds Cards */
+        #cricketList {
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .odds-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            transition: transform 0.2s;
+        }
+
+        .odds-card:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .odds-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text3);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .odds-teams {
+            font-weight: 700;
+            font-size: 14px;
+            color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .odds-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .odds-item {
+            background: rgba(0, 239, 255, 0.05);
+            border: 1px solid rgba(0, 239, 255, 0.1);
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .odds-item:active {
+            background: rgba(0, 239, 255, 0.2);
+            transform: scale(0.95);
+        }
+
+        .odds-lbl {
+            font-size: 10px;
+            color: var(--text3);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .odds-val {
+            font-weight: 700;
+            color: var(--cyan);
+            font-size: 15px;
         }
     </style>
 </head>
@@ -1156,12 +1647,23 @@
             </div>
             <div class="round-badge">Round #<span id="roundNum">—</span></div>
             <div class="hd-spacer"></div>
-            <div id="walletHeader">
-                <span class="wallet-icon">💰</span>
-                <div class="wallet-inner">
-                    <span class="wallet-lbl">Balance</span>
-                    <span id="headerWalletAmt">$1,000</span>
+            <div class="header-actions">
+                <div id="walletHeader">
+                    <span class="wallet-icon">💰</span>
+                    <div class="wallet-inner">
+                        <span class="wallet-lbl">Balance</span>
+                        <span id="headerWalletAmt">₹0</span>
+                    </div>
                 </div>
+                <button class="b-btn dep-btn" onclick="openModal('depositModal')">Deposit</button>
+                <button class="b-btn wd-btn" onclick="openModal('withdrawModal')">Withdraw</button>
+                <button class="prof-tog-btn" onclick="toggleSidebar()" aria-label="Profile">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </button>
             </div>
         </header>
 
@@ -1176,13 +1678,13 @@
             <div class="tabs">
                 <button class="tab active" onclick="switchTab(this,'all')">All Bets</button>
                 <button class="tab" onclick="switchTab(this,'prev')">Previous</button>
-                <button class="tab" onclick="switchTab(this,'top')">Top</button>
+                <button class="tab" onclick="switchTab(this,'cricket')">🏏 Live Cricket</button>
             </div>
             <div id="betsSummary">
                 <div class="bs-count">Online: <span id="onlineCount" style="color:var(--green)">0</span></div>
                 <div style="display:flex;flex-direction:column;align-items:flex-end">
                     <div class="bs-total-lbl">Total Bets</div>
-                    <div class="bs-total" id="betTotal">$0</div>
+                    <div class="bs-total" id="betTotal">₹0</div>
                 </div>
             </div>
             <div class="bets-thead">
@@ -1192,6 +1694,7 @@
                 <span>Win</span>
             </div>
             <div id="betsList"></div>
+            <div id="cricketList" class="hidden"></div>
         </div>
 
         <!-- ═══ RIGHT: GAME CANVAS ═══ -->
@@ -1219,7 +1722,7 @@
             <div id="queuedPill">⏳ Bet queued for next round</div>
 
             <!-- Live win badge -->
-            <div id="liveWinBadge" id="liveWinBadge">💰 <span id="liveWinAmt">$0</span></div>
+            <div id="liveWinBadge" id="liveWinBadge">💰 <span id="liveWinAmt">₹0</span></div>
 
             <!-- Crash banner -->
             <div id="flewAwayOverlay">
@@ -1247,31 +1750,179 @@
                     <button class="qa" onclick="setQuick(1000)">1000</button>
                 </div>
                 <button class="main-bet-btn idle" id="mainBetBtn" onclick="handleBetClick()">
-                    BET<br><span class="btn-sub" id="mainBetSub">$10.00</span>
+                    BET<br><span class="btn-sub" id="mainBetSub">₹10.00</span>
                 </button>
             </div>
 
             <!-- Wallet -->
             <div class="wallet-mini">
                 <span class="wallet-mini-lbl">Balance</span>
-                <span id="walletBottom">$1,000</span>
+                <span id="walletBottom">₹1,000</span>
             </div>
         </div>
 
     </div><!-- #root -->
 
+    <!-- Profile Sidebar Overlay -->
+    <div id="profileOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- Profile Sidebar -->
+    <div id="profileSidebar">
+        <div class="s-header">
+            <div class="s-avatar">👤</div>
+            <div>
+                <div class="s-info-name" id="profUser">Username</div>
+                <div class="s-info-mob" id="profMobile">+91 —</div>
+            </div>
+        </div>
+        <div class="s-nav">
+            <button class="s-item" onclick="showProfileDetails()">
+                <span>👤</span> Profile Details
+            </button>
+            <button class="s-item" onclick="showAccountStatement()">
+                <span>📝</span> Account Statement
+            </button>
+            <button class="s-item" onclick="openModal('passwordModal')">
+                <span>🔒</span> Change Password
+            </button>
+        </div>
+        <div class="s-footer">
+            <button class="m-btn" style="width:100%; border-color: rgba(255, 54, 84, 0.3); color: var(--red);"
+                onclick="logout()">
+                Logout
+            </button>
+        </div>
+    </div>
+
     <!-- Toast -->
     <div id="toast"></div>
 
+    <!-- Deposit Modal -->
+    <div id="depositModal" class="modal">
+        <div class="m-content" style="max-width: 400px; padding: 25px;">
+            <a class="m-close" onclick="closeModals()">×</a>
+            <div class="m-title">DEPOSIT FUNDS</div>
+            <p style="font-size: 13px; color: var(--text2); line-height: 1.5; margin-bottom: 20px;">
+                Scan QR and pay via any UPI app. Admin will approve credits within 5-10 mins.
+            </p>
+
+            <div
+                style="background: white; padding: 10px; border-radius: 12px; margin: 0 auto 20px; width: fit-content; border: 3px solid var(--accent);">
+                <img id="depositQrImg" src="/uploads/admin_qr.png" style="width: 200px; height: 200px; display: block;"
+                    onerror="this.src='https://dummyimage.com/200x200/fff/000.png&text=ADMIN+QR+NOT+FOUND'" alt="QR">
+            </div>
+
+            <div class="w-input-group">
+                <span class="w-label">Deposit Amount (₹)</span>
+                <input type="number" class="w-input" id="depAmt" placeholder="Minimum ₹100" min="100">
+            </div>
+
+            <button class="m-btn green" style="width: 100%; margin-top:10px;" id="depSubmitBtn"
+                onclick="submitDeposit()">
+                I HAVE PAID
+            </button>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div id="withdrawModal" class="modal">
+        <div class="m-content" style="max-width: 400px; padding: 25px;">
+            <a class="m-close" onclick="closeModals()">×</a>
+            <div class="m-title">WITHDRAW FUNDS</div>
+
+            <div class="w-option">
+                <div class="w-title">Option A: Upload QR Code</div>
+                <label class="upload-area" id="qrLabel">
+                    <input type="file" id="qrUpload" style="display: none;" onchange="handleQRSelect(this)">
+                    <i>📷</i>
+                    <p>Click to upload payment QR</p>
+                    <div class="file-name" id="selectedFileName"></div>
+                </label>
+            </div>
+
+            <div class="w-option">
+                <div class="w-title">Option B: Bank Details</div>
+                <div class="w-input-group">
+                    <span class="w-label">Account Number</span>
+                    <input type="text" class="w-input" id="wdAcc" placeholder="Enter bank account number">
+                </div>
+                <div class="w-input-group">
+                    <span class="w-label">IFSC Code</span>
+                    <input type="text" class="w-input" id="wdIfsc" placeholder="Enter bank IFSC">
+                </div>
+                <div class="w-input-group">
+                    <span class="w-label">Account Holder Name</span>
+                    <input type="text" class="w-input" id="wdName" placeholder="Enter holder name">
+                </div>
+            </div>
+
+            <div class="w-input-group">
+                <span class="w-label">Withdrawal Amount (₹)</span>
+                <input type="number" class="w-input" id="wdAmt" placeholder="Minimum ₹100" min="100">
+            </div>
+
+            <button class="m-btn green" style="width: 100%; margin-top: 10px;" id="wdSubmitBtn"
+                onclick="submitWithdrawal()">
+                SUBMIT WITHDRAWAL
+            </button>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="passwordModal" class="modal">
+        <div class="m-content" style="max-width: 350px;">
+            <a class="m-close" onclick="closeModals()">×</a>
+            <div class="m-title">CHANGE PASSWORD</div>
+            <div class="w-input-group">
+                <span class="w-label">Old Password</span>
+                <input type="password" class="w-input" id="oldPass">
+            </div>
+            <div class="w-input-group">
+                <span class="w-label">New Password</span>
+                <input type="password" class="w-input" id="newPass">
+            </div>
+            <button class="m-btn" style="width:100%; margin-top:10px;" onclick="changePassword()">UPDATE
+                PASSWORD</button>
+        </div>
+    </div>
+
     <script>
+        // Global Error Handling for Debugging
+        window.onerror = function (msg, url, lineNo, columnNo, error) {
+            console.error('JS Error:', msg, 'Line:', lineNo);
+            return false;
+        };
+
         // ══════════════════════════════════════════════════
         //  SOCKET + STATE
         // ══════════════════════════════════════════════════
         const socket = io();
 
+        socket.on('connect', () => {
+            console.log('✅ Socket.IO Connected!', socket.id);
+            toast('Connected to Game Server', 'success');
+        });
+        socket.on('connect_error', (err) => {
+            console.error('❌ Socket.IO Error:', err);
+            toast('Connection Error: Retrying...', 'error');
+        });
+
         let gameState = 'waiting';
         let multiplier = 1.00;
-        let wallet = 1000;
+        let wallet = 0; // Updated from 1000
+
+        // Modal functions
+        function openModal(id) {
+            if ((id === 'depositModal' || id === 'withdrawModal') && isGuest) {
+                return toast('Please Sign In to access this feature', 'warn');
+            }
+            if (id === 'depositModal') {
+                // Cache bust admin QR on open
+                document.getElementById('depositQrImg').src = '/uploads/admin_qr.png?t=' + Date.now();
+            }
+            document.getElementById(id).classList.add('active');
+        }
+        function closeModals() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
         let betQueued = false;   // queued for next round (pre-placed)
         let betActive = false;   // currently in round
         let queuedAmt = 0;
@@ -1279,6 +1930,213 @@
         let cashedOut = false;
         let prevBets = [];      // store previous round bets for "Previous" tab
         let currentBets = [];      // live bets this round
+
+        // Initial Auth Setup
+        let isGuest = true;
+        async function checkAuth() {
+            try {
+                const res = await fetch('/api/me');
+                const actions = document.querySelector('.header-actions');
+                if (res.ok) {
+                    const data = await res.json();
+                    wallet = data.balance;
+                    isGuest = false;
+                    updateWalletUI();
+                    document.getElementById('profUser').textContent = data.username;
+                    document.getElementById('profMobile').textContent = data.mobile;
+
+                    // Show standard header for logged in users
+                    actions.innerHTML = `
+                        <div id="walletHeader">
+                            <span class="wallet-icon">💰</span>
+                            <div class="wallet-inner">
+                                <span class="wallet-lbl">Balance</span>
+                                <span id="headerWalletAmt">₹${wallet.toFixed(2)}</span>
+                            </div>
+                        </div>
+                        <button class="b-btn dep-btn" onclick="openModal('depositModal')">Deposit</button>
+                        <button class="b-btn wd-btn" onclick="openModal('withdrawModal')">Withdraw</button>
+                        <button class="prof-tog-btn" onclick="toggleSidebar()">👤</button>
+                    `;
+                } else {
+                    // Guest Mode -> Show Sign Up & Sign In Buttons
+                    isGuest = true;
+                    actions.innerHTML = `
+                        <button class="b-btn wd-btn" onclick="window.location.href='/login.html'">SIGN IN</button>
+                        <button class="b-btn dep-btn" onclick="window.location.href='/login.html'">SIGN UP 🚀</button>
+                    `;
+                    updateWalletUI(); // ensure ₹0 shows
+                }
+            } catch (e) {
+                console.error('Auth check error', e);
+            }
+        }
+        checkAuth();
+
+        // ── Sidebar logic ──
+        function toggleSidebar() {
+            const sb = document.getElementById('profileSidebar');
+            const ov = document.getElementById('profileOverlay');
+            sb.classList.toggle('open');
+            ov.classList.toggle('open');
+            if (sb.classList.contains('open')) loadStatement();
+        }
+
+        function switchSTab(tab) {
+            document.querySelectorAll('.s-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.s-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('sTab-' + tab).classList.add('active');
+        }
+
+        async function loadStatement() {
+            const res = await fetch('/api/statement');
+            const data = await res.json();
+            const txList = document.getElementById('txList');
+            txList.innerHTML = '';
+            if (!data.transactions || data.transactions.length === 0) {
+                txList.innerHTML = '<div style="text-align:center;color:var(--text3);font-size:12px;padding:20px;">No recent transactions.</div>';
+                return;
+            }
+            data.transactions.forEach(t => {
+                const date = new Date(t.time).toLocaleString();
+                const sign = t.amount > 0 ? '+' : '';
+                const cls = t.amount > 0 ? 'pos' : 'neg';
+                txList.innerHTML += `
+                    <div class="tx-item">
+                        <div>
+                            <div class="tx-type">${t.type === 'DEPOSIT_APPROVED' ? 'DEPOSIT' : t.type}</div>
+                            <div class="tx-date">${date}</div>
+                        </div>
+                        <div class="tx-amt ${cls}">${sign}₹${Math.abs(t.amount).toFixed(2)}</div>
+                    </div>
+                `;
+            });
+        }
+
+        async function changePassword() {
+            const oldPass = document.getElementById('oldPass').value;
+            const newPass = document.getElementById('newPass').value;
+            if (!oldPass || !newPass) return toast('Fill all password fields', 'error');
+
+            const res = await fetch('/api/change-password', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ oldPass, newPass })
+            });
+            const data = await res.json();
+            if (data.success) {
+                toast('Password successfully updated!', 'success');
+                document.getElementById('oldPass').value = '';
+                document.getElementById('newPass').value = '';
+            } else {
+                toast(data.error || 'Failed to update', 'error');
+            }
+        }
+
+        async function logout() {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/login.html';
+        }
+
+        // ── Banking Logic ──
+        async function submitDeposit() {
+            const amtElem = document.getElementById('depAmt');
+            const amt = parseFloat(amtElem.value);
+            if (!amt || amt < 100) return toast('Minimum deposit is ₹100', 'warn');
+
+            const btn = document.getElementById('depSubmitBtn');
+            const originalText = btn.textContent;
+            btn.disabled = true; btn.textContent = 'CONNECTING...';
+
+            try {
+                const res = await fetch('/api/deposit', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: amt })
+                });
+                if (res.ok) {
+                    alert('Deposit notification sent successfully! Admin will verify your payment soon.');
+                    toast('Request sent!', 'success');
+                    amtElem.value = '';
+                    closeModals();
+                } else {
+                    const err = await res.json();
+                    alert('Submission failed: ' + (err.error || 'Server error'));
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Connection error: Please check your internet OR server status.');
+            }
+            finally { btn.disabled = false; btn.textContent = originalText; }
+        }
+
+        function handleQRSelect(input) {
+            const label = document.getElementById('qrLabel');
+            const fileName = document.getElementById('selectedFileName');
+            if (input.files && input.files[0]) {
+                label.classList.add('has-file');
+                fileName.textContent = 'Ready: ' + input.files[0].name;
+                toast('QR Code selected!', 'success');
+            } else {
+                label.classList.remove('has-file');
+                fileName.textContent = '';
+            }
+        }
+
+        async function submitWithdrawal() {
+            const amtElem = document.getElementById('wdAmt');
+            const amt = parseFloat(amtElem.value);
+            if (!amt || amt < 100) return toast('Minimum withdrawal is ₹100', 'warn');
+            if (amt > wallet) return toast('Insufficient balance', 'warn');
+
+            const qrFile = document.getElementById('qrUpload').files[0];
+            const acc = document.getElementById('wdAcc').value;
+            const ifsc = document.getElementById('wdIfsc').value;
+            const name = document.getElementById('wdName').value;
+
+            if (!qrFile && (!acc || !ifsc || !name)) {
+                return toast('Please upload QR or provide bank details', 'warn');
+            }
+
+            const btn = document.getElementById('wdSubmitBtn');
+            const originalText = btn.textContent;
+            btn.disabled = true; btn.textContent = 'PROcessing...';
+
+            let details = '';
+            if (qrFile) {
+                // Read as base64 for submission
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    await sendWithdrawRequest(amt, e.target.result, btn, originalText, amtElem);
+                };
+                reader.readAsDataURL(qrFile);
+            } else {
+                details = `BANK: ${acc} | IFSC: ${ifsc} | NAME: ${name}`;
+                await sendWithdrawRequest(amt, details, btn, originalText, amtElem);
+            }
+        }
+
+        async function sendWithdrawRequest(amount, details, btn, originalText, amtElem) {
+            try {
+                const res = await fetch('/api/withdraw', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount, details })
+                });
+                if (res.ok) {
+                    alert('Withdrawal request submitted successfully!');
+                    amtElem.value = '';
+                    closeModals();
+                } else {
+                    const err = await res.json();
+                    alert('Submission failed: ' + (err.error || 'Server error'));
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Connection error');
+            }
+            finally {
+                btn.disabled = false; btn.textContent = originalText;
+            }
+        }
 
         // ── Canvas setup ──
         const gameCanvas = document.getElementById('gameCanvas');
@@ -1301,7 +2159,7 @@
         let crashed = false;
         let crashX = 0, crashY = 0;
 
-        // K for M(t) = e^(k*t): k chosen so that ~30s → ~8x 
+        // K for M(t) = e^(k*t): k chosen so that ~30s → ~8x
         // ln(8)/30000ms = 0.0000693
         const K_CLIENT = Math.log(2) / 10000;
 
@@ -1309,24 +2167,20 @@
         let roundStartLocal = 0;
 
         // ══════════════════════════════════════════════════
-        //  PARTICLES
+        // PARTICLES
         // ══════════════════════════════════════════════════
         let particles = [];
         function spawnParticles(x, y, color, count = 30) {
             for (let i = 0; i < count; i++) {
-                const ang = Math.random() * Math.PI * 2;
-                const spd = 2 + Math.random() * 5;
+                const ang = Math.random() * Math.PI * 2; const spd = 2 + Math.random() * 5;
                 particles.push({
-                    x, y, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd,
-                    life: 1, decay: 0.02 + Math.random() * 0.03,
-                    size: 2 + Math.random() * 4,
-                    color
+                    x, y, vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd, life: 1, decay: 0.02 + Math.random() *
+                        0.03, size: 2 + Math.random() * 4, color
                 });
             }
-        }
-        function updateParticles() {
-            pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
-            particles = particles.filter(p => p.life > 0);
+        } function updateParticles() {
+            pCtx.clearRect(0, 0,
+                pCanvas.width, pCanvas.height); particles = particles.filter(p => p.life > 0);
             particles.forEach(p => {
                 p.x += p.vx; p.y += p.vy;
                 p.vy += 0.1; // gravity
@@ -1341,16 +2195,11 @@
         }
 
         // ══════════════════════════════════════════════════
-        //  DRAW SCENE
+        // DRAW SCENE
         // ══════════════════════════════════════════════════
         let animId;
         let engineFlicker = 0;
         const COLORS = { fly: '#c84bff', high: '#ff9f1c', crash: '#ff3654' };
-
-        function getTrailColor(mult) {
-            if (mult >= 5) return COLORS.high;
-            return COLORS.fly;
-        }
 
         function drawSunburst() {
             const W = gameCanvas.width, H = gameCanvas.height;
@@ -1375,13 +2224,10 @@
         function drawScene() {
             const W = gameCanvas.width, H = gameCanvas.height;
             ctx.clearRect(0, 0, W, H);
-
-            // Sunburst rays always
             drawSunburst();
 
             if (gameState === 'waiting' && trail.length === 0) return;
 
-            /*── Curve fill + stroke (always red) ──*/
             if (trail.length >= 2) {
                 // Red fill under curve
                 ctx.save();
@@ -1405,7 +2251,8 @@
                 for (let i = 1; i < trail.length; i++) ctx.lineTo(trail[i].x, trail[i].y);
                 ctx.strokeStyle = '#ff1a3a';
                 ctx.lineWidth = 3;
-                ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
                 ctx.shadowColor = '#ff0022';
                 ctx.shadowBlur = 14;
                 ctx.stroke();
@@ -1414,215 +2261,44 @@
 
             if (crashed || gameState === 'waiting') return;
 
-            /*── Propeller Stunt Plane ──*/
+            // Propeller Stunt Plane
             ctx.save();
             ctx.translate(planeX, planeY);
             ctx.rotate(planeAngle);
-
-            engineFlicker = Math.sin(Date.now() / 55) * 0.5 + 0.5;
-            const flicker2 = Math.sin(Date.now() / 40 + 1.2) * 0.5 + 0.5;
-
-            // Scale
             ctx.scale(3.2, 3.2);
 
-            // Propeller stunt plane — red/dark silhouette like reference image
             const bodyCol = '#cc1122';
             const bodyCol2 = '#991111';
             const darkCol = '#220000';
             const litCol = '#ff4455';
-            const whtCol = '#ffffff';
 
-            // ── PROPELLER (spinning) ──
+            // Propeller
             const propAngle = (Date.now() / 80) % (Math.PI * 2);
             ctx.save();
             ctx.translate(22, 0);
             ctx.rotate(propAngle);
-            // Blade 1
-            ctx.beginPath();
-            ctx.ellipse(0, -8, 2.5, 8, 0.1, 0, Math.PI * 2);
-            ctx.fillStyle = darkCol; ctx.fill();
-            ctx.strokeStyle = litCol; ctx.lineWidth = 0.5; ctx.stroke();
-            // Blade 2
-            ctx.beginPath();
-            ctx.ellipse(0, 8, 2.5, 8, -0.1, 0, Math.PI * 2);
-            ctx.fillStyle = darkCol; ctx.fill();
-            ctx.strokeStyle = litCol; ctx.lineWidth = 0.5; ctx.stroke();
-            // Hub
-            ctx.beginPath();
-            ctx.arc(0, 0, 3, 0, Math.PI * 2);
-            ctx.fillStyle = '#888'; ctx.fill();
+            ctx.beginPath(); ctx.ellipse(0, -8, 2.5, 8, 0.1, 0, Math.PI * 2); ctx.fillStyle = darkCol; ctx.fill();
+            ctx.beginPath(); ctx.ellipse(0, 8, 2.5, 8, -0.1, 0, Math.PI * 2); ctx.fillStyle = darkCol; ctx.fill();
             ctx.restore();
 
-            // ── EXHAUST PUFF (behind engine cowl, at x=-20 area) ──
-            const exhaustLen = 12 + engineFlicker * 8;
-            const exGrad = ctx.createLinearGradient(-20, 0, -20 - exhaustLen, 0);
-            exGrad.addColorStop(0, 'rgba(255,220,100,0.9)');
-            exGrad.addColorStop(0.4, 'rgba(255,100,30,0.5)');
-            exGrad.addColorStop(1, 'rgba(200,80,20,0)');
+            // Fuselage
             ctx.beginPath();
-            ctx.moveTo(-20, -3);
-            ctx.quadraticCurveTo(-20 - exhaustLen * 0.5, 0, -20 - exhaustLen, 0);
-            ctx.quadraticCurveTo(-20 - exhaustLen * 0.5, 3, -20, 3);
-            ctx.closePath();
-            ctx.fillStyle = exGrad;
-            ctx.fill();
-
-            // ── MAIN FUSELAGE ──
-            ctx.save();
-            ctx.shadowColor = '#ff0022'; ctx.shadowBlur = 8;
-            ctx.beginPath();
-            // Fuselage: from nose (right) to tail (left)
-            ctx.moveTo(22, 0);           // nose tip
-            ctx.bezierCurveTo(20, -5, 10, -7, -2, -6);   // top
-            ctx.bezierCurveTo(-10, -5, -18, -4, -22, -2); // toward tail
-            ctx.lineTo(-24, 0);          // tail point
+            ctx.moveTo(22, 0);
+            ctx.bezierCurveTo(20, -5, 10, -7, -2, -6);
+            ctx.bezierCurveTo(-10, -5, -18, -4, -22, -2);
+            ctx.lineTo(-24, 0);
             ctx.lineTo(-22, 2);
             ctx.bezierCurveTo(-18, 4, -10, 5, -2, 6);
             ctx.bezierCurveTo(10, 7, 20, 5, 22, 0);
             ctx.closePath();
-            const fuseG = ctx.createLinearGradient(0, -7, 0, 7);
-            fuseG.addColorStop(0, litCol);
-            fuseG.addColorStop(0.4, bodyCol);
-            fuseG.addColorStop(1, bodyCol2);
-            ctx.fillStyle = fuseG;
+            ctx.fillStyle = bodyCol;
             ctx.fill();
-            ctx.strokeStyle = darkCol; ctx.lineWidth = 0.5; ctx.stroke();
-            ctx.restore();
 
-            // Engine cowl (round nose section)
-            ctx.save();
+            // Wings
             ctx.beginPath();
-            ctx.ellipse(18, 0, 6, 7, 0, 0, Math.PI * 2);
-            const cowlG = ctx.createLinearGradient(12, -7, 24, 7);
-            cowlG.addColorStop(0, '#cc3344');
-            cowlG.addColorStop(1, darkCol);
-            ctx.fillStyle = cowlG;
+            ctx.moveTo(6, -5); ctx.lineTo(-12, -22); ctx.lineTo(-16, -22); ctx.lineTo(4, -6);
+            ctx.fillStyle = bodyCol2;
             ctx.fill();
-            ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = 0.5; ctx.stroke();
-            ctx.restore();
-
-            // ── COCKPIT CANOPY ──
-            ctx.save();
-            ctx.beginPath();
-            ctx.ellipse(4, -5.5, 7, 4, 0.1, 0, Math.PI);
-            ctx.closePath();
-            const canG = ctx.createLinearGradient(0, -9, 6, -3);
-            canG.addColorStop(0, 'rgba(100,200,255,0.85)');
-            canG.addColorStop(1, 'rgba(20,80,160,0.60)');
-            ctx.fillStyle = canG;
-            ctx.fill();
-            ctx.strokeStyle = whtCol; ctx.lineWidth = 0.5; ctx.stroke();
-            // Canopy shine
-            ctx.beginPath();
-            ctx.ellipse(2, -7, 2.5, 1, 0.2, 0, Math.PI * 2);
-            ctx.fillStyle = 'rgba(255,255,255,0.5)';
-            ctx.fill();
-            ctx.restore();
-
-            // ── UPPER WING (mono-wing above fuselage) ──
-            ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(6, -5);          // root leading edge
-            ctx.lineTo(-2, -5);         // root leading edge back
-            ctx.lineTo(-12, -22);       // tip leading
-            ctx.lineTo(-16, -22);       // tip trailing
-            ctx.lineTo(-8, -6);         // tip back to root
-            ctx.lineTo(4, -6);          // trailing root
-            ctx.closePath();
-            const wingG = ctx.createLinearGradient(2, -5, -14, -22);
-            wingG.addColorStop(0, litCol);
-            wingG.addColorStop(0.6, bodyCol);
-            wingG.addColorStop(1, bodyCol2);
-            ctx.fillStyle = wingG;
-            ctx.fill();
-            ctx.strokeStyle = darkCol; ctx.lineWidth = 0.4; ctx.stroke();
-            // Wing strut (brace from fuselage to wing mid)
-            ctx.beginPath();
-            ctx.moveTo(0, -5); ctx.lineTo(-6, -14);
-            ctx.strokeStyle = '#441111'; ctx.lineWidth = 0.8; ctx.stroke();
-            ctx.restore();
-
-            // ── LOWER WING (small, below fuselage) ──
-            ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(2, 5);           // root
-            ctx.lineTo(-4, 5);
-            ctx.lineTo(-10, 16);        // tip
-            ctx.lineTo(-13, 16);
-            ctx.lineTo(-7, 6);
-            ctx.lineTo(0, 6);
-            ctx.closePath();
-            const lwG = ctx.createLinearGradient(0, 5, -12, 16);
-            lwG.addColorStop(0, bodyCol);
-            lwG.addColorStop(1, bodyCol2);
-            ctx.fillStyle = lwG;
-            ctx.fill();
-            ctx.strokeStyle = darkCol; ctx.lineWidth = 0.4; ctx.stroke();
-            ctx.restore();
-
-            // Wing struts between upper & lower wing
-            ctx.save();
-            [[-3, 0], [-7, 0]].forEach(([xi]) => {
-                ctx.beginPath();
-                ctx.moveTo(xi, -5);
-                ctx.lineTo(xi - 2, 5);
-                ctx.strokeStyle = '#441111'; ctx.lineWidth = 0.7; ctx.stroke();
-            });
-            ctx.restore();
-
-            // ── HORIZONTAL STABILIZER ──
-            ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(-18, -2); ctx.lineTo(-22, -2);
-            ctx.lineTo(-26, -9); ctx.lineTo(-24, -9);
-            ctx.lineTo(-21, -3); ctx.lineTo(-17, -3);
-            ctx.closePath();
-            ctx.fillStyle = bodyCol; ctx.fill();
-            ctx.strokeStyle = darkCol; ctx.lineWidth = 0.4; ctx.stroke();
-            ctx.restore();
-
-            // ── VERTICAL TAIL FIN ──
-            ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(-19, -2); ctx.lineTo(-22, -2);
-            ctx.lineTo(-26, -14); ctx.lineTo(-23, -13);
-            ctx.lineTo(-20, -4); ctx.lineTo(-18, -3);
-            ctx.closePath();
-            const vfG = ctx.createLinearGradient(-20, -2, -26, -14);
-            vfG.addColorStop(0, litCol);
-            vfG.addColorStop(1, bodyCol2);
-            ctx.fillStyle = vfG;
-            ctx.fill();
-            ctx.strokeStyle = darkCol; ctx.lineWidth = 0.4; ctx.stroke();
-            ctx.restore();
-
-            // ── LANDING GEAR (small wheels) ──
-            ctx.save();
-            // Strut left
-            ctx.beginPath(); ctx.moveTo(0, 6); ctx.lineTo(-2, 12);
-            ctx.strokeStyle = darkCol; ctx.lineWidth = 1.2; ctx.stroke();
-            // Wheel
-            ctx.beginPath(); ctx.arc(-2, 12, 3, 0, Math.PI * 2);
-            ctx.fillStyle = '#111'; ctx.fill();
-            ctx.strokeStyle = '#444'; ctx.lineWidth = 0.5; ctx.stroke();
-            // Strut right
-            ctx.beginPath(); ctx.moveTo(8, 6); ctx.lineTo(6, 12);
-            ctx.strokeStyle = darkCol; ctx.lineWidth = 1.2; ctx.stroke();
-            ctx.beginPath(); ctx.arc(6, 12, 3, 0, Math.PI * 2);
-            ctx.fillStyle = '#111'; ctx.fill();
-            ctx.strokeStyle = '#444'; ctx.lineWidth = 0.5; ctx.stroke();
-            ctx.restore();
-
-            // ── WHITE STRIPE along fuselage ──
-            ctx.save();
-            ctx.beginPath();
-            ctx.moveTo(20, -1.5);
-            ctx.bezierCurveTo(10, -4, -5, -4, -18, -2);
-            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
-            ctx.lineWidth = 1.2; ctx.stroke();
-            ctx.restore();
-
-
 
             ctx.restore();
         }
@@ -1633,8 +2309,8 @@
             // exponential curve mapping: x linear with time, y from multiplier
             const logM = Math.log(mult);
             const maxLogM = Math.log(50); // max we ever show is 50x
-            const normX = logM / maxLogM;  // 0→1 across width
-            const normY = logM / maxLogM;  // 0→1 upward
+            const normX = logM / maxLogM; // 0→1 across width
+            const normY = logM / maxLogM; // 0→1 upward
             const px = marginL + normX * (W - marginL - marginR);
             const py = H - marginB - normY * (H - marginT - marginB);
             return { x: Math.min(px, W - marginR), y: Math.max(py, marginT) };
@@ -1647,7 +2323,7 @@
         }
 
         // ══════════════════════════════════════════════════
-        //  SOCKET EVENTS
+        // SOCKET EVENTS
         // ══════════════════════════════════════════════════
         socket.on('init', (data) => {
             gameState = data.gameState;
@@ -1691,6 +2367,7 @@
         socket.on('multiplier', (m) => {
             if (gameState !== 'flying') return;
             multiplier = m;
+            if (m % 1 === 0) console.log('Multiplier Tick:', m); // Log occasionally
 
             const mv = document.getElementById('multValue');
             mv.textContent = m.toFixed(2) + 'x';
@@ -1734,7 +2411,6 @@
                 document.getElementById('flewAwayOverlay').classList.add('show');
             }
         }
-
         socket.on('crash', (cm) => {
             gameState = 'crashed';
             crashed = true;
@@ -1754,7 +2430,7 @@
             document.getElementById('flewAwayMult').textContent = cm.toFixed(2) + 'x';
 
             if (betActive && !cashedOut) {
-                toast(`Flew away at ${cm.toFixed(2)}x — Lost $${activeBetAmt.toFixed(2)}`, 'lose');
+                toast(`Flew away at ${cm.toFixed(2)}x — Lost ₹${activeBetAmt.toFixed(2)}`, 'lose');
             }
 
             betActive = false; cashedOut = false; activeBetAmt = 0;
@@ -1803,7 +2479,7 @@
             updateWalletUI();
             updateBetBtn();
             document.getElementById('queuedPill').classList.add('show');
-            toast(`⏳ Bet $${amt.toFixed(2)} queued for next round`, 'warn');
+            toast(`⏳ Bet ₹${amt.toFixed(2)} queued for next round`, 'warn');
         });
 
         socket.on('betCancelled', () => {
@@ -1822,16 +2498,211 @@
             updateWalletUI();
             cashedOut = true;
             hideLiveWin();
-            toast(`💰 Cashed out $${win.toFixed(2)} @ ${mult.toFixed(2)}x!`, 'win');
+            toast(`💰 Cashed out ₹${win.toFixed(2)} @${mult.toFixed(2)}x!`, 'win');
             updateBetBtn();
         });
 
-        socket.on('betError', (msg) => toast(`⚠️ ${msg}`, 'warn'));
+        socket.on('betError', (msg) => toast(`⚠️ ${msg} `, 'warn'));
+
+        socket.on('cricketUpdate', (odds) => {
+            renderCricketOdds(odds);
+        });
+
+        async function fetchCricketOdds() {
+            try {
+                const res = await fetch('/api/odds');
+                const data = await res.json();
+                renderCricketOdds(data);
+            } catch (e) {
+                console.error('Failed to fetch odds', e);
+            }
+        }
+
+        let lastOddsHash = "";
+        let selectedOdds = null;
+        let selectedMatch = null;
+
+        function renderCricketOdds(odds) {
+            const list = document.getElementById('cricketList');
+            if (!list) return;
+
+            // Simple hash check to avoid re-rendering identical data every 1s
+            const currentHash = JSON.stringify(odds);
+            if (currentHash === lastOddsHash) return;
+            lastOddsHash = currentHash;
+
+            list.innerHTML = '';
+
+            if (!odds || odds.length === 0) {
+                list.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3)">No live matches found</div>';
+                return;
+            }
+
+            odds.forEach(m => {
+                const dateObj = new Date(m.commence_time);
+                // Adjust for Indian Time explicitly if needed, but toLocaleString should handle it
+                const dateStr = dateObj.toLocaleString('en-IN', {
+                    day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true
+                });
+
+                const card = document.createElement('div');
+                card.className = 'odds-card';
+                card.innerHTML = `
+                    <div class="odds-header">
+                        <span style="color:${m.status === 'LIVE' ? 'var(--green)' : 'var(--text3)'}">${m.status}</span>
+                        <span>${dateStr}</span>
+                    </div>
+                    <div class="odds-teams">${m.home_team} vs ${m.away_team}</div>
+                    <div class="odds-grid">
+                        <div class="odds-item btn-back" data-id="${m.id}" data-team="${m.home_team}" data-odds="${m.odds.back}">
+                            <span class="odds-lbl">BACK</span>
+                            <span class="odds-val">${m.odds.back}</span>
+                        </div>
+                        <div class="odds-item btn-lay" data-id="${m.id}" data-team="${m.away_team}" data-odds="${m.odds.lay}">
+                            <span class="odds-lbl">LAY</span>
+                            <span class="odds-val">${m.odds.lay}</span>
+                        </div>
+                    </div>
+                `;
+
+                // Remove per-card listeners - we will use global delegation below
+                list.appendChild(card);
+            });
+        }
+
+        // Global Event Delegation for Cricket Odds
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('.odds-item');
+            if (btn && btn.closest('#cricketList')) {
+                const { id, team, odds } = btn.dataset;
+                openCricketBet(id, team, parseFloat(odds));
+            }
+        });
+
+        // Bet Slip Logic
+        function openCricketBet(id, team, odds) {
+            console.log('[CRICKET] Opening bet slip for:', team, odds);
+            selectedMatch = id;
+            selectedOdds = odds;
+            const slip = document.getElementById('betSlip');
+            document.getElementById('slipMatchName').textContent = team;
+            document.getElementById('slipOddsVal').textContent = odds;
+            slip.classList.add('active');
+            updatePayout();
+        }
+
+        function closeBetSlip() {
+            document.getElementById('betSlip').classList.remove('active');
+        }
+
+        function updatePayout() {
+            const stake = parseFloat(document.getElementById('slipStakeInput').value) || 0;
+            const payout = stake * selectedOdds;
+            document.getElementById('slipPayout').textContent = `₹${payout.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+        }
+
+        async function submitCricketBet() {
+            const stake = parseFloat(document.getElementById('slipStakeInput').value);
+            const team = document.getElementById('slipMatchName').textContent;
+            if (!stake || stake < 10) return toast('Min bet ₹10', 'warn');
+
+            try {
+                const res = await fetch('/api/place-cricket-bet', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: stake,
+                        matchId: selectedMatch,
+                        selection: team
+                    })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    wallet = data.balance;
+                    updateWalletUI();
+                    toast('Bet Placed Successfully!', 'success');
+                    closeBetSlip();
+                } else {
+                    toast(data.error || 'Betting failed', 'error');
+                }
+            } catch (e) { toast('Error connecting to server', 'error'); }
+        }
+
+        // Sidebar Interactive Logic
+        async function showProfileDetails() {
+            try {
+                const me = await fetch('/api/me').then(r => r.json());
+                if (me.error) return toast('Please login', 'warn');
+                const container = document.getElementById('profDetailsContainer');
+                container.innerHTML = `
+                    <div style="display:flex; justify-content:space-between"><span>Username:</span> <b>${me.username}</b></div>
+                    <div style="display:flex; justify-content:space-between"><span>Mobile:</span> <b>${me.mobile}</b></div>
+                    <div style="display:flex; justify-content:space-between"><span>Real Balance:</span> <b style="color:var(--green)">₹${me.balance.toLocaleString()}</b></div>
+                    <div style="display:flex; justify-content:space-between"><span>Member Since:</span> <b>April 2026</b></div>
+                `;
+                openModal('profileDetailsModal');
+            } catch (e) { toast('Error loading profile', 'error'); }
+        }
+
+        async function showAccountStatement() {
+            try {
+                const res = await fetch('/api/statement');
+                const data = await res.json();
+                const container = document.getElementById('statementList');
+                if (!data.transactions || data.transactions.length === 0) {
+                    container.innerHTML = '<p style="text-align:center; padding:20px; color:var(--text3)">No transactions found</p>';
+                } else {
+                    let html = '<table style="width:100%; border-collapse:collapse; color:white; font-size:12px">';
+                    html += '<tr style="color:var(--text3); font-size:10px; border-bottom:1px solid var(--border)"><th align="left">Type</th><th align="right">Amount</th><th align="right">Time</th></tr>';
+                    data.transactions.slice(0, 15).forEach(t => {
+                        const date = new Date(t.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        const color = t.amount > 0 ? 'var(--green)' : 'var(--red)';
+                        html += `<tr style="border-bottom:1px solid rgba(255,255,255,0.05); height:40px">
+                            <td>${t.type}</td>
+                            <td align="right" style="color:${color}; font-weight:700">₹${Math.abs(t.amount).toLocaleString()}</td>
+                            <td align="right" style="color:var(--text3)">${date}</td>
+                        </tr>`;
+                    });
+                    html += '</table>';
+                    container.innerHTML = html;
+                }
+                openModal('statementModal');
+            } catch (e) { toast('Error loading statement', 'error'); }
+        }
+
+        async function submitPassChange() {
+            const oldPass = document.getElementById('oldPassInput').value;
+            const newPass = document.getElementById('newPassInput').value;
+
+            const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!passRegex.test(newPass)) {
+                return toast('Password must have 1 Upper, 1 Lower, 1 Number, 1 Special Char and be 8+ chars.', 'warn');
+            }
+
+            if (!oldPass || !newPass) return toast('Enter all fields', 'warn');
+
+            try {
+                const res = await fetch('/api/change-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ oldPass, newPass })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    toast('Password updated!', 'success');
+                    closeModals();
+                } else {
+                    toast(data.error || 'Update failed', 'error');
+                }
+            } catch (e) { toast('Error connecting to server', 'error'); }
+        }
 
         // ══════════════════════════════════════════════════
-        //  BET LOGIC
+        // BET LOGIC
         // ══════════════════════════════════════════════════
         function handleBetClick() {
+            if (isGuest) return toast('Please Sign In to place bets', 'warn');
             if (betActive && !cashedOut && gameState === 'flying') {
                 // CASHOUT
                 socket.emit('cashout');
@@ -1844,8 +2715,9 @@
             }
             // PLACE BET
             const amt = parseFloat(document.getElementById('betInput').value);
-            if (!amt || amt < 1) { toast('Enter a valid amount', 'warn'); return; }
-            if (amt > wallet) { toast('Insufficient balance!', 'warn'); return; }
+            if (!amt || amt < 1) { toast('Enter a valid amount', 'warn'); return; } if (amt > wallet) {
+                toast('Insufficient balance!', 'warn'); return;
+            }
             socket.emit('bet', amt);
         }
 
@@ -1858,11 +2730,11 @@
                 const win = (activeBetAmt * multiplier).toFixed(2);
                 btn.className = 'main-bet-btn active';
                 btn.childNodes[0].textContent = 'CASH OUT';
-                sub.textContent = `$${win}`;
+                sub.textContent = `₹${win}`;
             } else if (betQueued) {
                 btn.className = 'main-bet-btn queued';
                 btn.childNodes[0].textContent = 'CANCEL';
-                sub.textContent = `$${queuedAmt.toFixed(2)} queued`;
+                sub.textContent = `₹${queuedAmt.toFixed(2)} queued`;
             } else if (cashedOut && gameState === 'flying') {
                 btn.className = 'main-bet-btn cashed';
                 btn.disabled = true;
@@ -1872,12 +2744,12 @@
                 btn.className = 'main-bet-btn idle';
                 btn.disabled = false;
                 btn.childNodes[0].textContent = gameState === 'flying' ? 'BET NEXT' : 'BET';
-                sub.textContent = `$${amt.toFixed(2)}`;
+                sub.textContent = `₹${amt.toFixed(2)}`;
             }
         }
 
         // ══════════════════════════════════════════════════
-        //  UI HELPERS
+        // UI HELPERS
         // ══════════════════════════════════════════════════
         function showCountdown(n = 5) {
             document.getElementById('cdNum').textContent = n;
@@ -1889,7 +2761,7 @@
 
         function showLiveWin(amt) {
             const badge = document.getElementById('liveWinBadge');
-            document.getElementById('liveWinAmt').textContent = '$' + amt.toFixed(2);
+            document.getElementById('liveWinAmt').textContent = '₹' + amt.toFixed(2);
             badge.classList.add('show');
         }
         function hideLiveWin() {
@@ -1897,7 +2769,7 @@
         }
 
         function updateWalletUI() {
-            const fmt = n => '$' + Math.floor(n).toLocaleString();
+            const fmt = n => '₹' + Math.floor(n).toLocaleString();
             document.getElementById('headerWalletAmt').textContent = fmt(wallet);
             document.getElementById('walletBottom').textContent = fmt(wallet);
         }
@@ -1919,56 +2791,62 @@
             const list = document.getElementById('betsList');
             list.innerHTML = '';
             let total = 0;
-
             bets.forEach(b => {
                 total += b.bet;
                 const row = document.createElement('div');
                 row.className = 'bet-row';
 
-                const multTxt = b.cashout ? `${b.cashout.toFixed(2)}x` : (gameState === 'flying' ? '—' : '✕');
+                const multTxt = b.cashout ? `${b.cashout.toFixed(2)} x` : (gameState === 'flying' ? '—' : '✕');
                 const multCls = b.cashout ? 'cashed' : gameState === 'flying' ? 'active' : 'lost';
-                const winTxt = b.win != null ? (b.win > 0 ? `$${b.win.toFixed(2)}` : 'Lost') : '—';
+                const winTxt = b.win != null ? (b.win > 0 ? `₹${b.win.toFixed(2)}` : 'Lost') : '—';
                 const winCls = b.win > 0 ? 'cashed' : 'pending';
                 const isMe = b.id === socket.id;
 
                 row.innerHTML = `
-      <div class="bet-player">
-        <div class="bet-avatar">${b.avatar}</div>
-        <div class="bet-name ${isMe ? 'me' : ''}">${isMe ? 'You ★' : b.name}</div>
-      </div>
-      <div class="bet-amount">$${b.bet.toFixed(2)}</div>
-      <div class="bet-mult ${multCls}">${multTxt}</div>
-      <div class="bet-win ${winCls}">${winTxt}</div>
-    `;
+                    <div class="bet-player">
+                        <div class="bet-avatar">${b.avatar}</div>
+                        <div class="bet-name ${isMe ? 'me' : ''}">${isMe ? 'You ★' : b.name}</div>
+                    </div>
+                    <div class="bet-amount">₹${b.bet.toFixed(2)}</div>
+                    <div class="bet-mult ${multCls}">${multTxt}</div>
+                    <div class="bet-win ${winCls}">${winTxt}</div>
+                `;
                 list.appendChild(row);
             });
-            // Removed document.getElementById('betCount').textContent = bets.length; as we display online count instead
-            document.getElementById('betTotal').textContent = '$' + total.toFixed(2);
+            document.getElementById('betTotal').textContent = '₹' + total.toFixed(2);
         }
 
         function switchTab(el, tab) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
-            if (tab === 'all') renderBets(currentBets);
-            if (tab === 'prev') renderBets(prevBets);
+
+            const bl = document.getElementById('betsList');
+            const cl = document.getElementById('cricketList');
+            const th = document.querySelector('.bets-thead');
+
+            if (tab === 'cricket') {
+                bl.classList.add('hidden');
+                th.classList.add('hidden');
+                cl.classList.remove('hidden');
+                fetchCricketOdds();
+            } else {
+                cl.classList.add('hidden');
+                bl.classList.remove('hidden');
+                th.classList.remove('hidden');
+                if (tab === 'all') renderBets(currentBets);
+                if (tab === 'prev') renderBets(prevBets);
+            }
         }
 
         // Bet amount controls
         function adjustBet(dir) {
             const inp = document.getElementById('betInput');
             let v = parseFloat(inp.value) || 0;
-            const step = v < 50 ? 5 : v < 200 ? 25 : v < 1000 ? 50 : 100;
-            v = Math.max(1, v + dir * step);
-            inp.value = v;
-            updateBetBtn();
+            const step = v < 50 ? 5 : v < 200 ? 25 : v < 1000 ? 50 : 100; v = Math.max(1, v + dir * step);
+            inp.value = v; updateBetBtn();
+        } function setQuick(n) {
+            document.getElementById('betInput').value = n; updateBetBtn();
         }
-        function setQuick(n) {
-            document.getElementById('betInput').value = n;
-            updateBetBtn();
-        }
-
-        document.getElementById('betInput').addEventListener('input', updateBetBtn);
-
         // Keyboard: Space = cashout
         document.addEventListener('keydown', e => {
             if (e.code === 'Space') {
@@ -1990,6 +2868,62 @@
         // Start animation loop
         animate();
     </script>
+    <!-- Modals -->
+    <div id="passwordModal" class="modal">
+        <div class="m-content" style="max-width: 400px; padding: 25px;">
+            <a class="m-close" onclick="closeModals()">×</a>
+            <div class="m-title">CHANGE PASSWORD</div>
+            <div class="slip-input-grp">
+                <label>Current Password</label>
+                <input type="password" id="oldPassInput" class="slip-input" placeholder="••••••••">
+            </div>
+            <div class="slip-input-grp">
+                <label>New Password</label>
+                <input type="password" id="newPassInput" class="slip-input" placeholder="••••••••">
+            </div>
+            <button class="slip-btn" onclick="submitPassChange()">SAVE PASSWORD</button>
+        </div>
+    </div>
+
+    <div id="profileDetailsModal" class="modal">
+        <div class="m-content" style="max-width: 400px; padding: 25px;">
+            <a class="m-close" onclick="closeModals()">×</a>
+            <div class="m-title">PROFILE DETAILS</div>
+            <div id="profDetailsContainer" style="color:var(--text2); font-size: 14px; line-height: 2;"></div>
+        </div>
+    </div>
+
+    <div id="statementModal" class="modal">
+        <div class="m-content" style="max-width: 500px; padding: 25px;">
+            <a class="m-close" onclick="closeModals()">×</a>
+            <div class="m-title">ACCOUNT STATEMENT</div>
+            <div id="statementList" style="max-height: 300px; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <!-- Bet Slip Overlay -->
+    <div id="betSlip">
+        <div class="slip-header">
+            <div class="slip-title">BET SLIP</div>
+            <a class="m-close" onclick="closeBetSlip()" style="position:static">×</a>
+        </div>
+        <div style="margin-bottom: 20px;">
+            <div id="slipMatchName" style="font-weight: 700; font-size: 16px; margin-bottom: 4px;">TEAM NAME</div>
+            <div style="color: var(--text3); font-size: 12px;">Odds: <span id="slipOddsVal"
+                    style="color: var(--accent); font-weight: 700;">1.85</span></div>
+        </div>
+        <div class="slip-input-grp">
+            <label>Amount (₹)</label>
+            <input type="number" id="slipStakeInput" class="slip-input" placeholder="₹100" value="100"
+                oninput="updatePayout()">
+        </div>
+        <div
+            style="display: flex; justify-content: space-between; margin: 15px 0; padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">
+            <span style="color: var(--text3);">Potential Payout</span>
+            <span id="slipPayout" style="color: var(--green); font-weight: 700;">₹185.00</span>
+        </div>
+        <button class="slip-btn" onclick="submitCricketBet()">PLACE BET</button>
+    </div>
 </body>
 
 </html>
