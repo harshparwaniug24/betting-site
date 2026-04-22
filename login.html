@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviator - Login</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0e0e1f;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .auth-container {
+            background: #1a1a35;
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            position: relative;
+            z-index: 2;
+        }
+
+        h2 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 32px;
+            margin-bottom: 24px;
+            text-align: center;
+            color: #c84bff;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        label {
+            font-size: 12px;
+            color: #b0b0cc;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            background: #0d0d22;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        input:focus {
+            border-color: #00e5ff;
+            box-shadow: 0 0 0 2px rgba(0, 229, 255, 0.2);
+        }
+
+        button.btn {
+            width: 100%;
+            background: linear-gradient(90deg, #c84bff, #00e5ff);
+            color: #fff;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: opacity 0.2s;
+        }
+
+        button.btn:hover {
+            opacity: 0.9;
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #b0b0cc;
+        }
+
+        .toggle-link a {
+            color: #00e5ff;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .toggle-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Panels */
+        .panel {
+            display: none;
+        }
+
+        .panel.active {
+            display: block;
+        }
+
+        .error-msg {
+            color: #ff3654;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 10px;
+            min-height: 20px;
+        }
+
+        .success-msg {
+            color: #00e77a;
+        }
+
+        /* Canvas BG for aesthetic */
+        #bgCanvas {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="bgCanvas"></canvas>
+
+    <div class="auth-container">
+        <div id="errorBox" class="error-msg"></div>
+
+        <!-- LOGIN PANEL -->
+        <div id="loginPanel" class="panel active">
+            <h2>LOG IN</h2>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="logUser" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="logPass" placeholder="Enter password">
+            </div>
+            <button class="btn" onclick="login()">Enter Game</button>
+            <div class="toggle-link">
+                Don't have an account? <a onclick="switchPanel('registerPanel')">Register here</a>
+            </div>
+        </div>
+
+        <!-- REGISTER PANEL -->
+        <div id="registerPanel" class="panel">
+            <h2>REGISTER</h2>
+            <div class="form-group">
+                <label>Username</label>
+                <input type="text" id="regUser" placeholder="Choose a username">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="regPass" placeholder="Create a password">
+            </div>
+            <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="tel" id="regMobile" placeholder="e.g. 9876543210">
+            </div>
+            <button class="btn" onclick="register()">Next (Send OTP)</button>
+            <div class="toggle-link">
+                Already registered? <a onclick="switchPanel('loginPanel')">Log in</a>
+            </div>
+        </div>
+
+        <!-- OTP PANEL -->
+        <div id="otpPanel" class="panel">
+            <h2>VERIFY OTP</h2>
+            <p style="text-align: center; font-size: 12px; color: #b0b0cc; margin-bottom: 20px;">An SMS was sent to your
+                mobile.<br>(Hint: Check the Node.js server console if Twilio is unconfigured!)</p>
+            <div class="form-group">
+                <label>OTP Code</label>
+                <input type="text" id="otpCode" placeholder="Enter authentication code">
+            </div>
+            <button class="btn" onclick="verifyOTP()">Verify & Login</button>
+        </div>
+    </div>
+
+    <script>
+        const errorBox = document.getElementById('errorBox');
+
+        function showMsg(msg, isErr = true) {
+            errorBox.textContent = msg;
+            errorBox.className = isErr ? 'error-msg' : 'error-msg success-msg';
+        }
+
+        function switchPanel(id) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            showMsg('');
+        }
+
+        async function login() {
+            const u = document.getElementById('logUser').value;
+            const p = document.getElementById('logPass').value;
+            if (!u || !p) return showMsg('Please fill all fields');
+
+            const res = await fetch('/api/login', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: u, password: p })
+            });
+            const data = await res.json();
+            if (data.success) {
+                window.location.href = '/index.html';
+            } else {
+                showMsg(data.error || 'Login failed');
+            }
+        }
+
+        async function register() {
+            const u = document.getElementById('regUser').value;
+            const p = document.getElementById('regPass').value;
+            const m = document.getElementById('regMobile').value;
+            if (!u || !p || !m) return showMsg('Please fill all fields');
+
+            if (!m.startsWith('+') || m.length < 10) {
+                return showMsg('Please enter mobile number in E.164 format (e.g. +919876543210)');
+            }
+
+            const res = await fetch('/api/register', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: u, password: p, mobile: m })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showMsg('Registered! Please verify OTP.', false);
+                switchPanel('otpPanel');
+            } else {
+                showMsg(data.error || 'Registration failed');
+            }
+        }
+
+        async function verifyOTP() {
+            const otp = document.getElementById('otpCode').value;
+            const mobile = document.getElementById('regMobile').value;
+            if (!otp) return showMsg('Enter OTP');
+
+            const res = await fetch('/api/verify-otp', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mobile, otp })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showMsg('OTP Verified! Logging you in...', false);
+                // After OTP, log them in automatically with the credentials they just entered
+                const u = document.getElementById('regUser').value;
+                const p = document.getElementById('regPass').value;
+                document.getElementById('logUser').value = u;
+                document.getElementById('logPass').value = p;
+                setTimeout(login, 1000);
+            } else {
+                showMsg(data.error || 'Invalid OTP');
+            }
+        }
+
+        // Simple background effect
+        const cvs = document.getElementById('bgCanvas');
+        const ctx = cvs.getContext('2d');
+        function resize() { cvs.width = window.innerWidth; cvs.height = window.innerHeight; }
+        window.addEventListener('resize', resize);
+        resize();
+
+        let t = 0;
+        function draw() {
+            t += 0.005;
+            ctx.clearRect(0, 0, cvs.width, cvs.height);
+            ctx.fillStyle = '#1a1a35';
+            for (let i = 0; i < 50; i++) {
+                const x = (Math.sin(t * i) * 0.5 + 0.5) * cvs.width;
+                const y = ((i / 50) + (t * 0.5)) % 1 * cvs.height;
+                const r = Math.sin(t * i * 2) * 2 + 3;
+                ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+            }
+            requestAnimationFrame(draw);
+        }
+        draw();
+    </script>
+</body>
+
+</html>
