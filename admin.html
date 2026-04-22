@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviator Admin</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0e0e1f;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            padding: 40px;
+        }
+
+        .admin-container {
+            background: #1a1a35;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 32px;
+            color: #c84bff;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        th {
+            color: #b0b0cc;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        td {
+            font-size: 15px;
+        }
+
+        .bal {
+            color: #00e77a;
+            font-weight: 700;
+        }
+
+        .mob {
+            color: #00e5ff;
+            font-family: monospace;
+        }
+
+        .btn {
+            background: #c84bff;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .add-bal-form {
+            display: inline-flex;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .add-bal-form input {
+            background: #0d0d22;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            width: 80px;
+            font-family: monospace;
+            outline: none;
+        }
+
+        .add-bal-form input:focus {
+            border-color: #00e77a;
+        }
+
+        #alertBox {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            background: rgba(0, 231, 122, 0.1);
+            border: 1px solid rgba(0, 231, 122, 0.4);
+            color: #00e77a;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="admin-container">
+        <h2>
+            Admin Dashboard
+            <button class="btn" onclick="fetchUsers()">Refresh List</button>
+        </h2>
+        <p style="color: #b0b0cc; font-size: 14px; margin-bottom: 20px;">Review user accounts and manually approve
+            deposit payments.</p>
+
+        <!-- Admin QR Upload -->
+        <div
+            style="background: rgba(0, 229, 255, 0.05); border: 1px solid rgba(0, 229, 255, 0.2); padding: 15px; border-radius: 8px; margin-bottom: 30px;">
+            <h3 style="font-size: 16px; margin-bottom: 10px; color: #00e5ff;">Deposit Payment QR</h3>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <img src="/uploads/admin_qr.png" id="adminQrPreview"
+                    style="width: 60px; height: 60px; border-radius: 4px; background: white;"
+                    onerror="this.style.display='none'">
+                <div>
+                    <p style="font-size: 12px; color: #b0b0cc; margin-bottom: 8px;">Upload image to update the QR shown
+                        to users in Deposit Modal.</p>
+                    <input type="file" id="qrInput" accept="image/*" style="font-size: 12px;">
+                    <button class="btn" style="background:#00e5ff; color:#000;" onclick="uploadAdminQR()">Update
+                        QR</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="alertBox"></div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Mobile</th>
+                    <th>Balance</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="userTable">
+                <tr>
+                    <td colspan="4" style="text-align: center; color: #6b6b8a;">Loading users...</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 style="margin-top: 40px;">Pending Banking Requests</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>User</th>
+                    <th>Amount</th>
+                    <th>Details</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="bankingTable">
+                <tr>
+                    <td colspan="5" style="text-align: center; color: #6b6b8a;">No pending requests.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        async function fetchUsers() {
+            try {
+                const res = await fetch('/api/admin/users');
+                const users = await res.json();
+                const tbody = document.getElementById('userTable');
+                tbody.innerHTML = '';
+
+                if (!users.length) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #6b6b8a;">No registered users yet.</td></tr>';
+                    return;
+                }
+
+                users.forEach(u => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${u.username}</td>
+                        <td class="mob">${u.mobile}</td>
+                        <td class="bal">₹${u.balance.toFixed(2)}</td>
+                        <td>
+                            <div class="add-bal-form">
+                                <input type="number" id="amt-${u.username}" placeholder="Amt (e.g. 50)">
+                                <button class="btn" style="background:#00e77a;color:#000;" onclick="addBalance('${u.username}')">+ ADD DPOSIT</button>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function addBalance(username) {
+            const amtStr = document.getElementById(`amt-${username}`).value;
+            const amt = parseFloat(amtStr);
+            if (!amt || amt <= 0) return alert('Enter a valid amount to deposit.');
+
+            if (!confirm(`Are you sure you want to add ₹${amt} to ${username}'s balance?`)) return;
+
+            try {
+                const res = await fetch('/api/admin/add-balance', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, amount: amt })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    const alertBox = document.getElementById('alertBox');
+                    alertBox.textContent = `Successfully added ₹${amt} to ${username}! New balance: ₹${data.newBalance.toFixed(2)}`;
+                    alertBox.style.display = 'block';
+                    setTimeout(() => alertBox.style.display = 'none', 4000);
+                    fetchUsers();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Request failed');
+            }
+        }
+
+        // Initialize display
+        fetchUsers();
+        fetchBankingRequests();
+
+        async function fetchBankingRequests() {
+            try {
+                const res = await fetch('/api/admin/banking');
+                const reqs = await res.json();
+                const tbody = document.getElementById('bankingTable');
+                tbody.innerHTML = '';
+
+                if (!reqs.length) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #6b6b8a;">No pending requests.</td></tr>';
+                    return;
+                }
+
+                reqs.forEach(r => {
+                    const date = new Date(r.time).toLocaleString();
+                    const tr = document.createElement('tr');
+
+                    let detailsHtml = '';
+                    if (r.details && r.details.startsWith('data:image')) {
+                        detailsHtml = `
+                            <div style="cursor: pointer;" onclick="window.open('${r.details}')">
+                                <img src="${r.details}" style="width: 50px; height: 50px; border-radius: 4px; border: 1px solid #444;" 
+                                     title="Click to view full size">
+                                <span style="display:block; font-size:10px; color:#00e5ff;">QR PROOF</span>
+                            </div>`;
+                    } else {
+                        detailsHtml = `<span style="font-size:12px; color:#b0b0cc;">${r.details || '—'}</span>`;
+                    }
+
+                    tr.innerHTML = `
+                        <td><span style="color:${r.type === 'DEPOSIT' ? '#00e77a' : '#ff3654'}">${r.type}</span></td>
+                        <td>${r.username}</td>
+                        <td class="bal">₹${r.amount.toFixed(2)}</td>
+                        <td>${detailsHtml}</td>
+                        <td>
+                            <button class="btn" style="background:#00e77a;color:#000;" onclick="processRequest(${r.id}, 'APPROVE')">APPROVE</button>
+                            <button class="btn" style="background:#ff3654;" onclick="processRequest(${r.id}, 'REJECT')">REJECT</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function processRequest(requestId, action) {
+            if (!confirm(`Are you sure you want to ${action.toLowerCase()} this request?`)) return;
+
+            try {
+                const res = await fetch('/api/admin/approve-banking', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ requestId, action })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    fetchUsers();
+                    fetchBankingRequests();
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (e) {
+                console.error(e);
+                alert('Request failed');
+            }
+        }
+
+        async function uploadAdminQR() {
+            const file = document.getElementById('qrInput').files[0];
+            if (!file) return alert('Select a file first');
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const res = await fetch('/api/admin/upload-qr', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ image: e.target.result })
+                    });
+                    if (res.ok) {
+                        alert('QR Code updated! Refresh to see changes.');
+                        document.getElementById('adminQrPreview').src = '/uploads/admin_qr.png?t=' + Date.now();
+                        document.getElementById('adminQrPreview').style.display = 'block';
+                    } else {
+                        const err = await res.json();
+                        alert('Upload failed: ' + (err.error || 'Server error'));
+                    }
+                } catch (err) {
+                    console.error(err);
+                    alert('Connection error or file too large');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+
+</html>
