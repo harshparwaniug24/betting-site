@@ -461,6 +461,26 @@ io.on('connection', socket => {
     });
 });
 
+// Initialize the first waiting countdown when the server starts.
+// Without this, the game never enters the first round on fresh boot.
+function initGameCycle() {
+    if (waitTimer) clearInterval(waitTimer);
+    gameState = 'waiting';
+    countdown = 5;
+    io.emit('waiting', countdown);
+    io.emit('countdown', countdown);
+    waitTimer = setInterval(() => {
+        countdown--;
+        if (countdown > 0) io.emit('countdown', countdown);
+        if (countdown <= 0) {
+            clearInterval(waitTimer);
+            startRound();
+        }
+    }, 1000);
+}
+
+initGameCycle();
+
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
