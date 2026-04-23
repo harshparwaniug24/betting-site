@@ -89,7 +89,7 @@ const pendingPasswordResets = {}; // { mobile: { hash, expiresAt } }
 // ─────────────────────────────────────────
 //  FORGOT PASSWORD APIs
 // ─────────────────────────────────────────
-app.post('/api/forgot-password/send-otp', (req, res) => {
+app.post('/api/forgot-password/send-otp', async (req, res) => {
     const { mobile } = req.body;
     if (!mobile) return res.status(400).json({ error: 'Mobile required' });
     const formattedMobile = formatE164(mobile);
