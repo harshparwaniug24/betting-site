@@ -1,0 +1,234 @@
+[
+  {
+    "id": "1776812126729",
+    "username": "harsh",
+    "password": "Harshjit",
+    "mobile": "9079949815",
+    "balance": 1300,
+    "transactions": [
+      {
+        "type": "DEPOSIT_APPROVED",
+        "amount": 300,
+        "time": 1776855353268
+      },
+      {
+        "type": "MANUAL_ADD",
+        "amount": 500,
+        "time": 1776858732993
+      },
+      {
+        "type": "MANUAL_ADD",
+        "amount": 200,
+        "time": 1776858755523
+      }
+    ]
+  },
+  {
+    "id": "1776853812906",
+    "username": "harshjit",
+    "password": "harsh",
+    "mobile": "+919079949815",
+    "balance": 630.6,
+    "transactions": [
+      {
+        "type": "DEPOSIT_APPROVED",
+        "amount": 300,
+        "time": 1776853917361
+      },
+      {
+        "type": "DEPOSIT_APPROVED",
+        "amount": 500,
+        "time": 1776855975313
+      },
+      {
+        "type": "WITHDRAWAL",
+        "amount": -400,
+        "time": 1776856057495
+      },
+      {
+        "type": "BET",
+        "amount": -200,
+        "time": 1776856086214
+      },
+      {
+        "type": "BET",
+        "amount": -200,
+        "time": 1776856099197
+      },
+      {
+        "type": "MANUAL_ADD",
+        "amount": 700,
+        "time": 1776856118565
+      },
+      {
+        "type": "BET",
+        "amount": -10,
+        "time": 1776856167651
+      },
+      {
+        "type": "WIN",
+        "amount": 16.6,
+        "multiplier": 1.66,
+        "time": 1776856174967
+      },
+      {
+        "type": "WITHDRAWAL",
+        "amount": -500,
+        "time": 1776856505981
+      },
+      {
+        "type": "DEPOSIT_APPROVED",
+        "amount": 544,
+        "time": 1776857217096
+      },
+      {
+        "type": "BET",
+        "amount": -200,
+        "time": 1776858526834
+      },
+      {
+        "type": "BET",
+        "amount": -200,
+        "time": 1776858607813
+      },
+      {
+        "type": "BET",
+        "amount": -200,
+        "time": 1776858632311
+      },
+      {
+        "type": "BET",
+        "amount": -100,
+        "time": 1776858650404
+      },
+      {
+        "type": "DEPOSIT_APPROVED",
+        "amount": 300,
+        "time": 1776858673443
+      },
+      {
+        "type": "BET",
+        "amount": -200,
+        "time": 1776858682209
+      },
+      {
+        "type": "BET",
+        "amount": -100,
+        "time": 1776858687719
+      },
+      {
+        "type": "WITHDRAWAL",
+        "amount": -400,
+        "time": 1776858709243
+      },
+      {
+        "type": "DEPOSIT_APPROVED",
+        "amount": 400,
+        "time": 1776858744812
+      },
+      {
+        "type": "DEPOSIT_APPROVED",
+        "amount": 500,
+        "time": 1776858774174
+      },
+      {
+        "type": "BET",
+        "amount": -200,
+        "time": 1776858803626
+      },
+      {
+        "type": "WIN",
+        "amount": 426,
+        "multiplier": 2.13,
+        "time": 1776858809141
+      },
+      {
+        "type": "BET",
+        "amount": -200,
+        "time": 1776860719125
+      },
+      {
+        "type": "BET",
+        "amount": -200,
+        "time": 1776860732772
+      },
+      {
+        "type": "WIN",
+        "amount": 414,
+        "multiplier": 2.07,
+        "time": 1776860743295
+      },
+      {
+        "type": "BET",
+        "amount": -200,
+        "time": 1776861058670
+      },
+      {
+        "type": "BET",
+        "amount": -200,
+        "time": 1776861067414
+      },
+      {
+        "type": "WIN",
+        "amount": 240,
+        "multiplier": 1.2,
+        "time": 1776861070129
+      }
+    ]
+  },
+  {
+    "id": "1776864622825",
+    "username": "debanik",
+    "password": "debanik",
+    "mobile": "+918336019766",
+    "balance": 207,
+    "transactions": [
+      {
+        "type": "DEPOSIT_APPROVED",
+        "amount": 500,
+        "time": 1776864677543
+      },
+      {
+        "type": "BET",
+        "amount": -100,
+        "time": 1776864705114
+      },
+      {
+        "type": "WIN",
+        "amount": 207,
+        "multiplier": 2.07,
+        "time": 1776864715650
+      },
+      {
+        "type": "WITHDRAWAL",
+        "amount": -400,
+        "time": 1776864746397
+      }
+    ]
+  },
+  {
+    "id": "1776865895059",
+    "username": "varij",
+    "password": "varij123",
+    "mobile": "+917355156121",
+    "balance": 750,
+    "transactions": [
+      {
+        "type": "DEPOSIT_APPROVED",
+        "amount": 500,
+        "time": 1776865933427
+      },
+      {
+        "type": "BET",
+        "amount": -200,
+        "time": 1776865951902
+      },
+      {
+        "type": "WIN",
+        "amount": 450,
+        "multiplier": 2.25,
+        "time": 1776865963705
+      }
+    ]
+  }
+]
