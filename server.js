@@ -85,6 +85,59 @@ function saveRequests() {
 //  AUTHENTICATION APIs
 // ─────────────────────────────────────────
 const pendingVerifications = {};
+const pendingPasswordResets = {}; // { mobile: { hash, expiresAt } }
+// ─────────────────────────────────────────
+//  FORGOT PASSWORD APIs
+// ─────────────────────────────────────────
+app.post('/api/forgot-password/send-otp', (req, res) => {
+    const { mobile } = req.body;
+    if (!mobile) return res.status(400).json({ error: 'Mobile required' });
+    const user = users.find(u => u.mobile === mobile);
+    if (!user) return res.status(404).json({ error: 'Mobile not registered' });
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const hash = crypto.createHash('sha256').update(otp).digest('hex');
+    pendingPasswordResets[mobile] = {
+        hash,
+        expiresAt: Date.now() + 5 * 60 * 1000 // 5 min
+    };
+    console.log(`[FORGOT OTP] mobile: ${mobile} | otp: ${otp}`);
+    try {
+        if (process.env.TWILIO_ACCOUNT_SID && !process.env.TWILIO_ACCOUNT_SID.startsWith('AC_dummy')) {
+            twilioClient.messages.create({
+                body: `Your Aviator password reset code is: ${otp}`,
+                from: process.env.TWILIO_PHONE_NUMBER || '+1234567890',
+                to: formatE164(mobile)
+            });
+            res.json({ success: true, message: 'OTP Sent' });
+        } else {
+            console.log(`[DEMO MODE] Skip sending SMS. OTP: ${otp}`);
+            res.json({ success: true, message: 'OTP Generated (Check server console)' });
+        }
+    } catch (err) {
+        console.error('Twilio Error:', err.message);
+        res.status(500).json({ success: false, error: `Failed to send SMS: ${err.message}` });
+    }
+});
+
+app.post('/api/forgot-password/reset', (req, res) => {
+    const { mobile, otp, newPass } = req.body;
+    if (!mobile || !otp || !newPass) return res.status(400).json({ error: 'Missing fields' });
+    const pending = pendingPasswordResets[mobile];
+    if (!pending || Date.now() > pending.expiresAt) return res.status(400).json({ error: 'OTP Expired or Missing' });
+    const inputHash = crypto.createHash('sha256').update(otp).digest('hex');
+    if (inputHash !== pending.hash) return res.status(400).json({ error: 'Invalid OTP' });
+    // Password validation (same as change-password)
+    const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passRegex.test(newPass)) {
+        return res.status(400).json({ error: 'Password must have 1 uppercase, 1 lowercase, 1 number, 1 special char and be 8+ chars long.' });
+    }
+    const user = users.find(u => u.mobile === mobile);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    user.password = newPass;
+    saveDB();
+    delete pendingPasswordResets[mobile];
+    res.json({ success: true });
+});
 
 app.post('/api/register', async (req, res) => {
     const { username, password, mobile } = req.body;

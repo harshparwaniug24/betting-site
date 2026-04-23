@@ -163,7 +163,35 @@
             </div>
             <button class="btn" onclick="login()">Enter Game</button>
             <div class="toggle-link">
-                Don't have an account? <a onclick="switchPanel('registerPanel')">Register here</a>
+                Don't have an account? <a onclick="switchPanel('registerPanel')">Register here</a><br>
+                <a onclick="openForgotModal()" style="color:#ff9f1c;">Forgot Password?</a>
+
+                <!-- FORGOT PASSWORD MODAL -->
+                <div id="forgotModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(10,10,30,0.85); z-index:1000; align-items:center; justify-content:center;">
+                    <div style="background:#1a1a35; padding:32px 24px 24px 24px; border-radius:12px; max-width:350px; width:100%; position:relative;">
+                        <span onclick="closeForgotModal()" style="position:absolute; top:10px; right:18px; color:#fff; font-size:22px; cursor:pointer;">&times;</span>
+                        <h2 style="margin-bottom:18px; color:#00e5ff; text-align:center; font-size:22px;">Reset Password</h2>
+                        <div id="forgotStep1">
+                            <div class="form-group">
+                                <label>Registered Mobile</label>
+                                <input type="tel" id="fpMobile" placeholder="e.g. +919876543210">
+                            </div>
+                            <button class="btn" onclick="sendForgotOTP()">Send OTP</button>
+                        </div>
+                        <div id="forgotStep2" style="display:none;">
+                            <div class="form-group">
+                                <label>OTP Code</label>
+                                <input type="text" id="fpOTP" placeholder="Enter OTP">
+                            </div>
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <input type="password" id="fpNewPass" placeholder="New password">
+                            </div>
+                            <button class="btn" onclick="resetForgotPassword()">Reset Password</button>
+                        </div>
+                        <div id="fpMsg" class="error-msg" style="margin-top:10px;"></div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -202,6 +230,59 @@
     </div>
 
     <script>
+                // ──────────────── FORGOT PASSWORD ────────────────
+                function openForgotModal() {
+                    document.getElementById('forgotModal').style.display = 'flex';
+                    document.getElementById('forgotStep1').style.display = '';
+                    document.getElementById('forgotStep2').style.display = 'none';
+                    document.getElementById('fpMsg').textContent = '';
+                    document.getElementById('fpMobile').value = '';
+                    document.getElementById('fpOTP').value = '';
+                    document.getElementById('fpNewPass').value = '';
+                }
+                function closeForgotModal() {
+                    document.getElementById('forgotModal').style.display = 'none';
+                }
+                async function sendForgotOTP() {
+                    const mobile = document.getElementById('fpMobile').value;
+                    if (!mobile || !mobile.startsWith('+') || mobile.length < 10) {
+                        return fpMsg('Enter valid mobile number in E.164 format');
+                    }
+                    document.getElementById('fpMsg').textContent = 'Sending OTP...';
+                    const res = await fetch('/api/forgot-password/send-otp', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mobile })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        document.getElementById('fpMsg').textContent = 'OTP sent!';
+                        document.getElementById('forgotStep1').style.display = 'none';
+                        document.getElementById('forgotStep2').style.display = '';
+                    } else {
+                        fpMsg(data.error || 'Failed to send OTP');
+                    }
+                }
+                async function resetForgotPassword() {
+                    const mobile = document.getElementById('fpMobile').value;
+                    const otp = document.getElementById('fpOTP').value;
+                    const newPass = document.getElementById('fpNewPass').value;
+                    if (!otp || !newPass) return fpMsg('Enter OTP and new password');
+                    document.getElementById('fpMsg').textContent = 'Resetting password...';
+                    const res = await fetch('/api/forgot-password/reset', {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ mobile, otp, newPass })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        document.getElementById('fpMsg').textContent = 'Password reset! You can now log in.';
+                        setTimeout(() => { closeForgotModal(); }, 1200);
+                    } else {
+                        fpMsg(data.error || 'Failed to reset password');
+                    }
+                }
+                function fpMsg(msg) {
+                    document.getElementById('fpMsg').textContent = msg;
+                }
         const errorBox = document.getElementById('errorBox');
 
         function showMsg(msg, isErr = true) {
